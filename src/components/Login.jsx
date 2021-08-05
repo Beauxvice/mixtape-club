@@ -22,6 +22,9 @@ const LoginBox = () => (
         <a href="/auth/google" className="btn btn-info">
           Sign In with Google
         </a>
+        <a href="/auth/spotify" className="btn btn-info">
+          Sign In with Spotify
+        </a>
       </div>
     </div>
     <Footer />

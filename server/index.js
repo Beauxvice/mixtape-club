@@ -5,6 +5,7 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
+const SpotifyStrategy = require("passport-spotify").Strategy;
 const db = require("../database/index");
 const { lyricRoutes } = require("./routes/lyricRoutes");
 // const { getRelatedVideos } = require('./helper');
@@ -92,6 +93,25 @@ passport.use(new GoogleStrategy({
   )
 );
 
+passport.use(
+  new SpotifyStrategy(
+    {
+      clientID: process.env.SPOTIFY_CLIENT_ID,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/spotify/callback",
+      passReqToCallback: true,
+    },
+    (req, token, tokenSecret, profile, done) => {
+      console.log("spotify auth", profile);
+      db.findCreate(
+        { spotifyId: profile.id, displayName: profile.displayName },
+        (err, user) => done(err, user)
+      );
+      process.nextTick(() => done(null, profile));
+    }
+  )
+);
+
 /**
  * Get request calling Google's authenticaion
  * defining the scope of infromation to retrieve
@@ -100,6 +120,13 @@ app.get(
   "/auth/google",
   passport.authenticate("google", {
     scope: ["email", "profile"],
+  })
+);
+
+app.get(
+  "/auth/spotify",
+  passport.authenticate("spotify", {
+    scope: 'user-read-recently-played',
   })
 );
 
@@ -112,6 +139,15 @@ app.get(
  (req, res) => {
    res.redirect(`${process.env.ENVIRONMENT_URL}/mixtape-player`);
  });
+
+app.get("/auth/spotify/callback",
+  passport.authenticate("spotify", {
+    failureRedirect: "http://localhost:3000/login",
+  }),
+  (req, res) => {
+    res.redirect("http://localhost:3000/");
+  }
+);
 // app.get(
 //   "/auth/google/callback",
 //   passport.authenticate("google", {

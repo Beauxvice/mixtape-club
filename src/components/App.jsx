@@ -6,6 +6,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Swal from 'sweetalert2';
 
 import Container from "./Container.jsx";
 
@@ -66,6 +67,8 @@ class App extends React.Component {
       googleId: "FILL_ME_IN",
       tapeBackgroundColor: "#fff",
       queryParam: "",
+      explicitContent: false,
+      explicitSearch: false,
     };
 
 
@@ -122,7 +125,6 @@ class App extends React.Component {
   }
 
   onSearchChange(event) {
-    console.log(event.target.value);
     this.setState({
       [event.target.name]: event.target.value,
     });
@@ -168,15 +170,40 @@ class App extends React.Component {
    */
 
   onSearch() {
-    const { songTitle, songArtist } = this.state;
+    const { songTitle, songArtist, explicitSearch } = this.state;
     const query  = `${songTitle} ${songArtist}`;
-    console.log('THIS IS QUERY', query);
+    // console.log('THIS IS QUERY', query);
     axios
       .post("/search", { query })
       .then((response) => {
         this.setState({
           searchResults: response.data.items,
           selectedResult: response.data.items[0],
+        });
+      })
+      .then(() => {
+        axios.post("/contentWarning", { songTitle, songArtist })
+        .then(( { data }) => {
+          // console.log(songTitle, songArtist);
+          // console.log(data);
+          // console.log('results from content warning', data);
+          if(data === true){
+            Swal.fire({
+              title: 'Content Warning',
+              text: "Search Results Have Been Marked By The Community To Contain Explicit Lyrics",
+              icon: 'warning',
+              // imageUrl: "https://i.imgur.com/JkwhjZR.png",
+              // imageWidth: 400,
+              // imageHeight: 200,
+              imageAlt: 'parental guidance',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, I Understand'
+            }).then(() => {
+              this.setState({ explicitSearch: true });
+            });
+          } else {
+            this.setState({ explicitSearch: false });
+          }
         });
       })
       .catch((err) => {
@@ -264,13 +291,28 @@ class App extends React.Component {
    * @param {object} song - object containing all the youTube data about the song.
    */
   onPassSongToSideA(song) {
-    const { sideA } = this.state;
+    const { sideA, explicitSearch } = this.state;
+    let timerInterval;
     if (sideA.length < 5) {
       this.setState((prevState) => ({ sideA: prevState.sideA.concat(song) }));
+      if(explicitSearch) { this.setState({ explicitContent: true }); }
     } else {
-      alert(
-        "Side A is full, try adding songs to side B or remove songs to make more space."
-      );
+      Swal.fire({
+        title: 'Flip The Tape!',
+        html: 'To Add More Tracks Flip Tape',
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector('b');
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      });
     }
   }
 
@@ -281,13 +323,28 @@ class App extends React.Component {
    * @param {object} song - object containing all the youTube data about the song.
    */
   onPassSongToSideB(song) {
-    const { sideB } = this.state;
+    const { sideB, explicitSearch } = this.state;
+    let timerInterval;
     if (sideB.length < 5) {
       this.setState((prevState) => ({ sideB: prevState.sideB.concat(song) }));
+      if(explicitSearch) { this.setState({ explicitContent: true }); }
     } else {
-      alert(
-        "Side B is full, try adding songs to side A or remove songs to make more space."
-      );
+      Swal.fire({
+        title: 'Flip The Tape!',
+        html: 'To Add More Tracks Flip Tape',
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector('b');
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      });
     }
   }
 
@@ -312,7 +369,7 @@ class App extends React.Component {
    * with friends.
    */
   onSavePlaylist() {
-    const { googleId, sideA, sideB, builderImage, tapeLabel } = this.state;
+    const { googleId, sideA, sideB, builderImage, tapeLabel, explicitContent } = this.state;
     console.log('this.state in onSavePlaylist', this.state);
     const { image, name } = builderImage;
     axios
@@ -322,6 +379,7 @@ class App extends React.Component {
       bSideLinks: sideB,
       tapeDeck: image,
       tapeLabel,
+      explicitContent,
     })
     .then((response) => {
       // handle success

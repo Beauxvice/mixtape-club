@@ -72,7 +72,7 @@ class App extends React.Component {
     };
 
 
-    this.suggestMixtape = this.suggestMixtape.bind(this);
+    //this.suggestMixtape = this.suggestMixtape.bind(this);
     this.onSearch = this.onSearch.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
@@ -111,7 +111,7 @@ class App extends React.Component {
         console.error("Error searching:", err);
       });
     console.log("location in componentDidMount", location);
-    this.suggestMixtape();
+    //this.suggestMixtape();
   }
 
   /**
@@ -386,9 +386,9 @@ class App extends React.Component {
       console.log('response.config.data', JSON.parse(response.config.data));
       const newId = JSON.parse(response.config.data);
       // const {userId} = response.config.data;
-      console.log('newId', newId.aSideLinks[0].id);
+      //console.log('newId', newId.aSideLinks[0].id);
       const key = JSON.stringify(newId.aSideLinks);
-      console.log('key from onSavePlaylist', key);
+      //console.log('key from onSavePlaylist', key);
 
       axios
       .post("/getlink", {

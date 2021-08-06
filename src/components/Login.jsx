@@ -22,9 +22,16 @@ const LoginBox = () => (
         <a href="/auth/google" className="btn btn-info">
           Sign In with Google
         </a>
-        <a href="/auth/spotify" className="btn btn-info">
-          Sign In with Spotify
-        </a>
+        <div>
+          { true ?(
+          <a href="/auth/spotify" className="btn btn-info">
+            Sign In with Spotify
+          </a>
+          ) :(
+            <h6>login to google first</h6>
+          )}
+          
+        </div>
       </div>
     </div>
     <Footer />

@@ -66,6 +66,7 @@ const userSchema = new mongoose.Schema({
   id: Number,
   googleId: String,
   displayName: String,
+  spotifyId: String
 });
 userSchema.plugin(findOrCreate);
 const User = mongoose.model("User", userSchema);
@@ -163,7 +164,7 @@ const getAllPlaylists = (filter, callback) => {
       console.log("error", err);
       callback(err);
     } else {
-      console.log("data", data);
+      //console.log("data", data);
       callback(null, data);
     }
   });

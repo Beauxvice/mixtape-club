@@ -99,7 +99,7 @@ class MixtapePlayer extends React.Component {
         const bTitleArray = [];
         const aSide = JSON.parse(data.response[0].aSideLinks);
         const bSide = JSON.parse(data.response[0].bSideLinks);
-        console.log('aSide', aSide[0].id);
+        //console.log('aSide', aSide[0].id);
         this.setState({
           userPlaylists: data.response,
           userName: data.displayName,

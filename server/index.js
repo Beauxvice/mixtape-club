@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 const SpotifyStrategy = require("passport-spotify").Strategy;
+const mongoose = require("mongoose");
 const db = require("../database/index");
 const { lyricRoutes } = require("./routes/lyricRoutes");
 // const { getRelatedVideos } = require('./helper');
@@ -102,12 +103,15 @@ passport.use(
       passReqToCallback: true,
     },
     (req, token, tokenSecret, profile, done) => {
-      console.log("spotify auth", profile);
-      db.findCreate(
-        { spotifyId: profile.id, displayName: profile.displayName },
-        (err, user) => done(err, user)
-      );
-      process.nextTick(() => done(null, profile));
+      console.log("spotify auth", req);
+      db.User.findOrCreate({spotifyId: profile.id});
+      process.nextTick(() => done(null, profile, token));
+      // console.log("spotify auth", req);
+      // db.findCreate(
+      //   { spotifyId: profile.id, displayName: profile.displayName },
+      //   (err, user) => done(err, user)
+      // );
+      // process.nextTick(() => done(null, profile, token));
     }
   )
 );
@@ -145,7 +149,8 @@ app.get("/auth/spotify/callback",
     failureRedirect: "http://localhost:3000/login",
   }),
   (req, res) => {
-    res.redirect("http://localhost:3000/");
+    //console.log('spotify callback', res.req);
+    res.redirect(`${process.env.ENVIRONMENT_URL}/`);
   }
 );
 // app.get(
@@ -196,11 +201,11 @@ app.get("/getUser", (req, res) => {
 app.get("/userPlaylists", (req, res) => {
   if (req.user) {
     const { id, displayName } = req.user;
-    console.log('displayName from app.get /userPlaylists', displayName);
+    //console.log('displayName from app.get /userPlaylists', displayName);
     db.getAllPlaylists({ userId: id }, (info, response) => {
-      console.log('response from db.getAllPlaylists in app.get/userPlaylists', response);
+      //console.log('response from db.getAllPlaylists in app.get/userPlaylists', response);
       const data = { response, displayName };
-      console.log('data from get/userPlaylists', data);
+     // console.log('data from get/userPlaylists', data);
       res.send(data);
     });
   }

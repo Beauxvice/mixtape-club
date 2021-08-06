@@ -103,9 +103,11 @@ passport.use(
       passReqToCallback: true,
     },
     (req, token, tokenSecret, profile, done) => {
-      console.log("spotify auth", req);
-      db.User.findOrCreate({spotifyId: profile.id});
-      process.nextTick(() => done(null, profile, token));
+      //console.log("spotify auth", req);
+      db.User.findOrCreate({spotifyId: profile.id}).then((user) => {
+        console.log(user, token);
+      });
+      // process.nextTick(() => done(null, profile, token));
       // console.log("spotify auth", req);
       // db.findCreate(
       //   { spotifyId: profile.id, displayName: profile.displayName },

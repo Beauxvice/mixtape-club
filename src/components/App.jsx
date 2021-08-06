@@ -64,7 +64,8 @@ class App extends React.Component {
         "Track 4 B",
         "Track 5 B",
       ],
-      googleId: "FILL_ME_IN",
+      googleId: null,
+      googleUser: {},
       tapeBackgroundColor: "#fff",
       queryParam: "",
       explicitContent: false,
@@ -105,6 +106,7 @@ class App extends React.Component {
         googleId,
       })
       .then((response) => {
+        this.setState({ googleUser: response});
         console.log('response from componentDidMount app.jsx', response);
       })
       .catch((err) => {
@@ -448,9 +450,11 @@ class App extends React.Component {
       .get("/user/")
       .then((response) => {
         if (response.data.verified) {
+          console.log("response from google", response.data);
           this.setState({
             isAuthenticated: true,
             googleId: response.data.id,
+            googleUser: response.data
           });
         }
       })

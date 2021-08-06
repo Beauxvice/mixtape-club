@@ -1,12 +1,17 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 
 const SpotifyContext = createContext();
 
 const SpotifyContextProvider = ({children}) => {
-  const test = 'hello';
+  const [ spotifyUser, setSpotifyUser ] = useState({});
+  const { googleUser, setGoogleUser } = useState({});
+
 
   const SpotifyProps = {
-    test
+    spotifyUser,
+    setSpotifyUser,
+    googleUser,
+    setGoogleUser
   };
 
   return (

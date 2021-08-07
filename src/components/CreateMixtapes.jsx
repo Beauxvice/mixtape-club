@@ -6,6 +6,7 @@ import Search from "./Search.jsx";
 import SearchList from "./SearchList.jsx";
 import PlaylistBuilderList from "./PlaylistBuilderList.jsx";
 import SearchPlayer from "./SearchPlayer.jsx";
+import SpotifyContainer from '../SpotifyComponent/SpotifyContainer.jsx';
 
 /** CreateMixtapes component renders all components associated with creation of a mixtape, including
  * PlaylistImageSelector, Search, SearchPlayer, SearchList, and SearchBuilderList at the
@@ -80,6 +81,7 @@ const CreateMixtapes = (props) => {
             onDelete={onDelete}
             queryParam={queryParam}
           />
+          <SpotifyContainer />
         </div>
       )}
     </div>

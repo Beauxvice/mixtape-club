@@ -2,14 +2,23 @@ import React, { useContext } from 'react';
 
 import SpotifyContext from '../../SpotifyContext.jsx';
 
-const resultList = () => {
-  const { spotifyUser } = useContext(SpotifyContext);
+const Song = (props) => {
+  const { song } = props;
 
   return (
     <div>
-      
+
     </div>
   );
 };
 
-export default resultList;
+const RecentList = () => {
+  const { recentlyPlayed } = useContext(SpotifyContext);
+  return (
+    <div>
+      { recentlyPlayed.map((song) => <Song song={song} />) }
+    </div>
+  );
+};
+
+export default RecentList;

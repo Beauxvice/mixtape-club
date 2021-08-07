@@ -8,9 +8,10 @@ const SpotifyContextProvider = ({children}) => {
   const { googleUser, setGoogleUser } = useState({});
   const { token, setToken } = useState('');
   const { tokenSecret, setTokenSecret } = useState('');
+  const { recentlyPlayed, setRecentlyPlayed } = useState('');
 
   const getSpotifyUser = () => {
-    console.log("clicked")
+    console.log("clicked");
     axios.get('/user', { withCredentials: true })
     .then(res => {
       if(res.data){
@@ -28,7 +29,9 @@ const SpotifyContextProvider = ({children}) => {
     setToken,
     tokenSecret,
     setTokenSecret,
-    getSpotifyUser
+    getSpotifyUser,
+    recentlyPlayed, 
+    setRecentlyPlayed
   };
 
   return (

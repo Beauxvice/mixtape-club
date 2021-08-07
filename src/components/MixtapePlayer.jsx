@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import YouTube from "react-youtube";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,6 +10,8 @@ import {
 import { library, config } from "@fortawesome/fontawesome-svg-core";
 
 import axios from "axios";
+import advisory from "../assets/img/parentalAdvisory.png";
+import bunny from "../assets/img/bunny.png";
 import UserMixtapesList from "./UserMixtapes.jsx";
 import SampleMixtape from "./SampleMixtape.jsx";
 import PlayerSongList from "./PlayerSongList.jsx";
@@ -31,6 +32,12 @@ class MixtapePlayer extends React.Component {
       playing: false,
       aSideLinks: ["fi33-cITS0s"],
       bSideLinks: ["H1Zm6E6Sy4Y"],
+      aSideLyricArray: [],
+      aSideArtArray: [],
+      aSideLyricLinkArray: [],
+      bSideLyricArray: [],
+      bSideArtArray: [],
+      bSideLyricLinkArray: [],
       interval: null,
       playListId: null || this.props.location,
       aSideTitles: ["Login to start making mixtapes of your own!"],
@@ -44,6 +51,8 @@ class MixtapePlayer extends React.Component {
       userName: "",
       currentPlaylistId: "",
       toggleLink: false,
+      explicitContent: false,
+      isAuth: this.props.isAuth,
     };
 
     this.getUserPlaylists();
@@ -93,13 +102,22 @@ class MixtapePlayer extends React.Component {
       .then((response) => {
         const { data } = response;
 
+        // aSideLyricArray: [],
+        // aSideArtArray: [],
+        // aSideLyricLinkArray: [],
+
         const aVideoArray = [];
         const bVideoArray = [];
         const aTitleArray = [];
         const bTitleArray = [];
+        const aLyricArray = [];
+        const bLyricArray = [];
+        const aArtArray = [];
+        const bArtArray = [];
+        const aLyricLinks = [];
+        const bLyricLinks = [];
         const aSide = JSON.parse(data.response[0].aSideLinks);
         const bSide = JSON.parse(data.response[0].bSideLinks);
-        //console.log('aSide', aSide[0].id);
         this.setState({
           userPlaylists: data.response,
           userName: data.displayName,
@@ -108,10 +126,16 @@ class MixtapePlayer extends React.Component {
           aSide.forEach((video) => {
             aVideoArray.push(video.id.videoId);
             aTitleArray.push(video.snippet.title);
+            aLyricArray.push(video.genLyrics);
+            aArtArray.push(video.genArt);
+            aLyricLinks.push(video.genUrl);
           });
           bSide.forEach((video) => {
             bVideoArray.push(video.id.videoId);
             bTitleArray.push(video.snippet.title);
+            bLyricArray.push(video.genLyrics);
+            bArtArray.push(video.genArt);
+            bLyricLinks.push(video.genUrl);
           });
           this.setState({
             currentPlaylistId: data.response[0]._id,
@@ -119,9 +143,16 @@ class MixtapePlayer extends React.Component {
             bSideLinks: bVideoArray,
             aSideTitles: aTitleArray,
             bSideTitles: bTitleArray,
+            aSideLyricArray: aLyricArray,
+            aSideArtArray: aArtArray,
+            aSideLyricLinkArray: aLyricLinks,
+            bSideLyricArray: bLyricArray,
+            bSideArtArray: bArtArray,
+            bSideLyricLinkArray: bLyricLinks,
             tapeCover: data.response[0].tapeDeck,
             sidePlaying: aVideoArray,
             tapeTitle: data.response[0].tapeLabel,
+            explicitContent: data.response[0].explicitContent
           });
           this.state.player.loadPlaylist({ playlist: this.state.sidePlaying });
         }
@@ -188,6 +219,12 @@ class MixtapePlayer extends React.Component {
     const bVideoArray = [];
     const aTitleArray = [];
     const bTitleArray = [];
+    const aLyricArray = [];
+    const bLyricArray = [];
+    const aArtArray = [];
+    const bArtArray = [];
+    const aLyricLinks = [];
+    const bLyricLinks = [];
     if (this.state.playListId) {
       const { search } = this.state.playListId;
 
@@ -202,29 +239,45 @@ class MixtapePlayer extends React.Component {
         })
         .then((response) => {
           if (response.data.bSide) {
-            const { aSide, bSide, tapeDeck, tapeLabel, userId } = response.data;
+            const { aSide, bSide, tapeDeck, tapeLabel } = response.data;
             aSide.forEach((video) => {
               aVideoArray.push(video.id.videoId);
               aTitleArray.push(video.snippet.title);
+              aLyricArray.push(video.genLyrics);
+              aArtArray.push(video.genArt);
+              aLyricLinks.push(video.genUrl);
             });
             bSide.forEach((video) => {
               bVideoArray.push(video.id.videoId);
               bTitleArray.push(video.snippet.title);
+              bLyricArray.push(video.genLyrics);
+              bArtArray.push(video.genArt);
+              bLyricLinks.push(video.genUrl);
             });
             this.setState({
               aSideLinks: aVideoArray,
               bSideLinks: bVideoArray,
               aSideTitles: aTitleArray,
               bSideTitles: bTitleArray,
+              aSideLyricArray: aLyricArray,
+              aSideArtArray: aArtArray,
+              aSideLyricLinkArray: aLyricLinks,
+              bSideLyricArray: bLyricArray,
+              bSideArtArray: bArtArray,
+              bSideLyricLinkArray: bLyricLinks,
               tapeCover: tapeDeck,
               sidePlaying: aVideoArray,
               tapeTitle: tapeLabel,
+              explicitContent: response.data[0].explicitContent
             });
           } else {
             const { aSide, tapeDeck, tapeLabel, userId } = response.data;
             aSide.forEach((video) => {
               aVideoArray.push(video.id.videoId);
               aTitleArray.push(video.snippet.title);
+              aLyricArray.push(video.genLyrics);
+              aArtArray.push(video.genArt);
+              aLyricLinks.push(video.genUrl);
             });
             this.setState({
               aSideLinks: aVideoArray,
@@ -232,6 +285,10 @@ class MixtapePlayer extends React.Component {
               tapeCover: tapeDeck,
               sidePlaying: aVideoArray,
               tapeTitle: tapeLabel,
+              aSideLyricArray: aLyricArray,
+              aSideArtArray: aArtArray,
+              aSideLyricLinkArray: aLyricLinks,
+              explicitContent: response.data[0].explicitContent
             });
           }
         })
@@ -433,24 +490,43 @@ class MixtapePlayer extends React.Component {
         const bVideoArray = [];
         const aTitleArray = [];
         const bTitleArray = [];
+        const aLyricArray = [];
+        const bLyricArray = [];
+        const aArtArray = [];
+        const bArtArray = [];
+        const aLyricLinks = [];
+        const bLyricLinks = [];
         const aSideLinks = JSON.parse(playlist.aSideLinks);
         const bSideLinks = JSON.parse(playlist.bSideLinks);
         aSideLinks.forEach((video) => {
           aVideoArray.push(video.id.videoId);
           aTitleArray.push(video.snippet.title);
+          aLyricArray.push(video.genLyrics);
+          aArtArray.push(video.genArt);
+          aLyricLinks.push(video.genUrl);
         });
         bSideLinks.forEach((video) => {
           bVideoArray.push(video.id.videoId);
           bTitleArray.push(video.snippet.title);
+          bLyricArray.push(video.genLyrics);
+          bArtArray.push(video.genArt);
+          bLyricLinks.push(video.genUrl);
         });
         this.setState({
           aSideLinks: aVideoArray,
           bSideLinks: bVideoArray,
           aSideTitles: aTitleArray,
           bSideTitles: bTitleArray,
+          aSideLyricArray: aLyricArray,
+          aSideArtArray: aArtArray,
+          aSideLyricLinkArray: aLyricLinks,
+          bSideLyricArray: bLyricArray,
+          bSideArtArray: bArtArray,
+          bSideLyricLinkArray: bLyricLinks,
           tapeCover: playlist.tapeDeck,
           sidePlaying: aVideoArray,
           tapeTitle: playlist.tapeLabel,
+          explicitContent: playlist.explicitContent
         });
         this.state.player.loadPlaylist({ playlist: aVideoArray });
       }
@@ -469,6 +545,7 @@ class MixtapePlayer extends React.Component {
 
   render() {
     const {
+      isAuth,
       aSideLinks,
       bSideLinks,
       aSideTitles,
@@ -480,7 +557,17 @@ class MixtapePlayer extends React.Component {
       userName,
       currentPlaylistId,
       toggleLink,
+      explicitContent,
+      aSideLyricArray,
+      aSideArtArray,
+      aSideLyricLinkArray,
+      bSideLyricArray,
+      bSideArtArray,
+      bSideLyricLinkArray,
     } = this.state;
+
+
+
 
     return (
       <div>
@@ -496,6 +583,10 @@ class MixtapePlayer extends React.Component {
           className="row col-9 col-md-6 d-flex align-items-center player-ui mx-auto"
           style={this.divStyle}
         >
+          { explicitContent ?
+          <img className='advisory' src={advisory} alt='parental guidance suggested'/> :
+          <img className='advisory' src={bunny} alt='pink bunnnny'/>
+          }
           <div className="row col-12 col-md-12">
             <FontAwesomeIcon
               className="col-3 ui-button"
@@ -527,6 +618,7 @@ class MixtapePlayer extends React.Component {
         </div>
 
         <PlayerSongList
+          isAuth={isAuth}
           onFlip={this.onFlip}
           currentSong={currentSong}
           aSideLinks={aSideLinks}
@@ -535,6 +627,12 @@ class MixtapePlayer extends React.Component {
           bSideTitles={bSideTitles}
           currentPlaylistId={currentPlaylistId}
           toggleLink={toggleLink}
+          aSideLyricArray={aSideLyricArray}
+          aSideArtArray={aSideArtArray}
+          aSideLyricLinkArray={aSideLyricLinkArray}
+          bSideLyricArray={bSideLyricArray}
+          bSideArtArray={bSideArtArray}
+          bSideLyricLinkArray={bSideLyricLinkArray}
           onToggleLink={this.onToggleShareLink}
         />
         <UserMixtapesList

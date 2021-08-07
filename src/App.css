@@ -5,17 +5,34 @@
   font-family: 'Saira', Arial, Helvetica, sans-serif;
 }
 
+.advisory {
+  width: 120px;
+  height: auto;
+  position: absolute;
+  right: 420px;
+  bottom: 210px;
+}
+
+.songDetails {
+  margin-top: 50px;;
+}
+
+
+.lineBreak {
+  margin-top: 1.5em;
+}
+
 /** Login view header styles **/
 
 .hero {
-  background: 
+  background:
     linear-gradient(
-      rgba(255, 0, 0, 0.45), 
+      rgba(255, 0, 0, 0.45),
       rgba(111, 0, 255, 0.45)
     ),
     url("./assets/img/cassette-tape.jpg");
   background-size: cover;
-  
+
   margin: 0rem -1rem 1rem !important;
 }
 
@@ -61,7 +78,7 @@
   display: block;
   margin: .2rem auto 0.5rem;
   padding-right: 0rem !important;
-  
+
 }
 
 .search-item {
@@ -164,7 +181,7 @@
 .player-ui {
   margin-top: -110px;
   padding: 6px 0 0 10px !important;
-  
+
   margin-right: -40px !important;
 }
 
@@ -215,7 +232,7 @@ footer {
 
 /*********** MEDIA QUERIES ************/
 /***** x-small devices only *****/
-@media (max-width: 575.98px) { 
+@media (max-width: 575.98px) {
   .tape-deck-image {
   display: block;
   margin: -92px auto 20px;
@@ -232,7 +249,7 @@ footer {
 }
 
 /***** Small devices (landscape phones, 576px and up) *****/
-@media (min-width: 576px) and (max-width: 767.98px) { 
+@media (min-width: 576px) and (max-width: 767.98px) {
   .tape-cover-image {
   margin: -266px auto 1rem;
   display: block;
@@ -273,9 +290,9 @@ footer {
 /***** Medium devices (tablets, 768px and up) *****/
 @media (min-width: 768px) {
   .hero {
-    background: 
+    background:
     linear-gradient(
-      rgba(255, 0, 0, 0.45), 
+      rgba(255, 0, 0, 0.45),
       rgba(111, 0, 255, 0.45)
     ),
     url("./assets/img/cassette-tape-lg.jpg");

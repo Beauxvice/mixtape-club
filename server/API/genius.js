@@ -9,34 +9,24 @@ const { getLyrics, getSong } = require('genius-lyrics-api');
 const fetchLyrics = (title, artist) => {
   const options = {
     apiKey: process.env.GENIUS_TOKEN,
-    title: 'power',
-    artist: 'kanye west',
+    title,
+    artist,
     optimizeQuery: true,
   };
 
-  getLyrics(options)
-    .then((lyrics) => {
-      console.log('FROM WITHIN getLyrics', lyrics);
-      return lyrics;
-    })
-    .catch(err => console.log(err));
+  return getLyrics(options)
+    .then((lyrics) => lyrics);
 };
-
-// fetchLyrics();
 
 const fetchSongDetails = (title, artist) => {
   const options = {
     apiKey: process.env.GENIUS_TOKEN,
-    title: 'power',
-    artist: 'kanye west',
+    title,
+    artist,
     optimizeQuery: true,
   };
 
-  getSong(options).then(song => console.log(`
-  ${song.id}
-  ${song.url}
-  ${song.albumArt}
-  ${song.lyrics}`));
+  return getSong(options).then(song => song);
 };
 
 module.exports = { fetchLyrics, fetchSongDetails };

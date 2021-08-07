@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,6 +16,8 @@ const PlaylistBuilderList = (props) => {
     onSavePlaylist,
     onDelete,
   } = props;
+
+  const [ listView, setListView ] = useState('side A');
 
   return (
     <div className="border border-info playlist-builder shadow-sm p-3 mb-5 bg-white rounded">
@@ -52,24 +54,26 @@ const PlaylistBuilderList = (props) => {
             aria-orientation="vertical"
           >
             <a
-              className="nav-link active"
+              className={ listView === 'side A' ? "nav-link active" : "nav-link" }
               id="v-pills-home-tab"
               data-toggle="pill"
               href="#v-pills-home"
               role="tab"
               aria-controls="v-pills-home"
               aria-selected="true"
+              onClick={() => { setListView('side A'); }}
             >
               Side A
             </a>
             <a
-              className="nav-link"
+              className={ listView === 'side B' ? "nav-link active" : "nav-link" }
               id="v-pills-profile-tab"
               data-toggle="pill"
               href="#v-pills-profile"
               role="tab"
               aria-controls="v-pills-profile"
               aria-selected="false"
+              onClick={() => { setListView('side B'); }}
             >
               Side B
             </a>
@@ -77,6 +81,7 @@ const PlaylistBuilderList = (props) => {
         </div>
         <div className="col-sm-4 col-md-5">
           <div className="tab-content" id="v-pills-tabContent">
+          { listView === 'side A' ?
             <div
               className="tab-pane fade show active"
               id="v-pills-home"
@@ -130,13 +135,13 @@ const PlaylistBuilderList = (props) => {
                   />
                 </li>
               </ul>
-            </div>
+            </div>            :
             <div
-              className="tab-pane fade"
+              // className="tab-pane fade"
               id="v-pills-profile"
               role="tabpanel"
               aria-labelledby="v-pills-profile-tab"
-            >
+              >
               <ul className="list-group list-group-flush builder-tracks">
                 <li className="list-group-item track-li">
                   {sideB[0] ? sideB[0].snippet.title : "Track 1 B"}{" "}
@@ -185,6 +190,7 @@ const PlaylistBuilderList = (props) => {
                 </li>
               </ul>
             </div>
+          }
           </div>
         </div>
       </div>

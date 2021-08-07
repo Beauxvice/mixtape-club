@@ -192,7 +192,7 @@ app.get("/logout", (req, res) => {
 app.get("/getUser", (req, res) => {
   console.log("get user query", req.query);
   db.findCreate(req.query, (info, response) => {
-    console.log('response from app.get /getUser', response);
+    // console.log('response from app.get /getUser', response)
     res.send(response);
   });
 });
@@ -206,11 +206,11 @@ app.get("/getUser", (req, res) => {
 app.get("/userPlaylists", (req, res) => {
   if (req.user) {
     const { id, displayName } = req.user;
-    //console.log('displayName from app.get /userPlaylists', displayName);
+    // console.log('displayName from app.get /userPlaylists', displayName);
     db.getAllPlaylists({ userId: id }, (info, response) => {
-      //console.log('response from db.getAllPlaylists in app.get/userPlaylists', response);
+      // console.log('response from db.getAllPlaylists in app.get/userPlaylists', response);
       const data = { response, displayName };
-     // console.log('data from get/userPlaylists', data);
+      // console.log('data from get/userPlaylists', data);
       res.send(data);
     });
   }
@@ -271,7 +271,7 @@ app.post("/update", (req, res) => {
   const filter = { userId: "CHANGE THE FILTER SOMEHOW FILL_ME_IN" };
   const update = { tapeDeck: "FILL_ME_IN" };
   db.updatePlaylist(filter, update, (response) => {
-    console.log('response from app.post /update', response);
+    // console.log('response from app.post /update', response);
     res.end("Playlist Updated");
   });
 });
@@ -293,7 +293,7 @@ app.post("/store", (req, res) => {
   };
   console.log(playlistDetails);
   db.storePlaylist(playlistDetails, (response) => {
-    console.log('respose from db.storePlaylist in app.post/store', response);
+    // console.log('respose from db.storePlaylist in app.post/store', response);
     res.end("Playlist Stored");
   });
 });
@@ -311,7 +311,7 @@ app.post("/getLink", (req, res) => {
     if (response === null) {
       res.end("No Results Found");
     } else {
-      console.log('response._id in app.post/getLink',response._id);
+      // console.log('response._id in app.post/getLink',response._id);
 
       res.send({ id: response._id });
     }
@@ -326,7 +326,7 @@ app.post("/getLink", (req, res) => {
 app.post("/mixtape-player/", (req, res) => {
   // need to do this dynamically
   const { id } = req.body;
-  console.log('id from app.post /mixtape-player/', id);
+  // console.log('id from app.post /mixtape-player/', id);
   const filter = { _id: id };
 
   db.retrievePlaylist(filter, (response) => {
@@ -380,7 +380,7 @@ app.post("/search", (req, res) => {
   axios
     .get(url, options)
     .then((response) => {
-      console.log('response from app.post/search', response.data.items);
+      // console.log('response from app.post/search', response.data.items);
       res.send(response.data);
     })
     .catch((err) => {
@@ -390,24 +390,24 @@ app.post("/search", (req, res) => {
 });
 
 
-app.post('/suggested', (req, res) =>{
-  const {videoId} = req.body.selectedResult.id;
-  console.log('req.body from app.post/suggested', req.body.selectedResult.id.videoId);
-  const url = 'https://youtube.googleapis.com/youtube/v3/search?part=snippet';
-  const options = {
-    params: {
-      key: process.env.YOUTUBE_API_KEY,
-      q: videoId,
-      type: 'video',
-      videoEmbeddable: true,
-      maxResults: 8,
-    }
-  };
-  axios
-  .get(url, options)
-  .then(results => {console.log('results.data.items from app.post /suggested', results.data); return results;})
-  .catch((err) => console.log('ERROR from app.post/suggested', err));
-});
+// app.post('/suggested', (req, res) =>{
+//   const {videoId} = req.body.selectedResult.id;
+//   console.log('req.body from app.post/suggested', req.body.selectedResult.id.videoId);
+//   const url = 'https://youtube.googleapis.com/youtube/v3/search?part=snippet';
+//   const options = {
+//     params: {
+//       key: process.env.YOUTUBE_API_KEY,
+//       q: videoId,
+//       type: 'video',
+//       videoEmbeddable: true,
+//       maxResults: 8,
+//     }
+//   };
+//   axios
+//   .get(url, options)
+//   .then(results => {console.log('results.data.items from app.post /suggested', results.data); return results;})
+//   .catch((err) => console.log('ERROR from app.post/suggested', err));
+// });
 
 app.use('/', lyricRoutes);
 // app.post("/suggested", (req, res) => {

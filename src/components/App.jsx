@@ -1,7 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-console */
 import React from "react";
-import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
@@ -80,6 +79,7 @@ class App extends React.Component {
     this.onPlayVideo = this.onPlayVideo.bind(this);
     this.onPauseVideo = this.onPauseVideo.bind(this);
     this.onReady = this.onReady.bind(this);
+    this.getSongInfo = this.getSongInfo.bind(this);
 
     this.onSelectTapeImage = this.onSelectTapeImage.bind(this);
     this.onTapeLabelChange = this.onTapeLabelChange.bind(this);
@@ -172,7 +172,7 @@ class App extends React.Component {
    */
 
   onSearch() {
-    const { songTitle, songArtist, explicitSearch } = this.state;
+    const { songTitle, songArtist } = this.state;
     const query  = `${songTitle} ${songArtist}`;
     // console.log('THIS IS QUERY', query);
     axios
@@ -186,17 +186,11 @@ class App extends React.Component {
       .then(() => {
         axios.post("/contentWarning", { songTitle, songArtist })
         .then(( { data }) => {
-          // console.log(songTitle, songArtist);
-          // console.log(data);
-          // console.log('results from content warning', data);
           if(data === true){
             Swal.fire({
               title: 'Content Warning',
               text: "Search Results Have Been Marked By The Community To Contain Explicit Lyrics",
               icon: 'warning',
-              // imageUrl: "https://i.imgur.com/JkwhjZR.png",
-              // imageWidth: 400,
-              // imageHeight: 200,
               imageAlt: 'parental guidance',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Yes, I Understand'
@@ -218,7 +212,19 @@ class App extends React.Component {
 
 
 
+  // function to retrieve lyric data from song.
 
+  getSongInfo(song){
+    const track = song;
+    const { songTitle, songArtist } = this.state;
+    return axios.post('/fetchDetails', { songTitle, songArtist })
+    .then(({ data }) => {
+      track.genLyrics = data.lyrics;
+      track.genArt = data.albumArt;
+      track.genUrl = data.url;
+      return track;
+    });
+  }
 
 
   suggestMixtape() {
@@ -236,12 +242,6 @@ class App extends React.Component {
         console.error("Error searching:", err);
       });
   }
-
-
-
-
-
-
 
 
 
@@ -294,7 +294,9 @@ class App extends React.Component {
    */
   onPassSongToSideA(song) {
     const { sideA, explicitSearch } = this.state;
-    let timerInterval;
+    this.getSongInfo(song)
+    .then((song) => {
+      let timerInterval;
     if (sideA.length < 5) {
       this.setState((prevState) => ({ sideA: prevState.sideA.concat(song) }));
       if(explicitSearch) { this.setState({ explicitContent: true }); }
@@ -316,6 +318,7 @@ class App extends React.Component {
         }
       });
     }
+    });
   }
 
   /**
@@ -326,6 +329,8 @@ class App extends React.Component {
    */
   onPassSongToSideB(song) {
     const { sideB, explicitSearch } = this.state;
+    this.getSongInfo(song)
+    .then((song) => {
     let timerInterval;
     if (sideB.length < 5) {
       this.setState((prevState) => ({ sideB: prevState.sideB.concat(song) }));
@@ -348,7 +353,9 @@ class App extends React.Component {
         }
       });
     }
+  });
   }
+
 
   /**
    * Function makes the tapeImageSelector disappear from the page
@@ -397,7 +404,6 @@ class App extends React.Component {
         key,
       })
       .then((response) => {
-        console.log('I am response.data.id', response.data.id);
         this.setState({
           queryParam: response.data.id,
         });

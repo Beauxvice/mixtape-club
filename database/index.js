@@ -83,12 +83,12 @@ const findCreate = (googleInfo, callback) => {
   const { googleId, displayName } = googleInfo;
   User.findOrCreate({ googleId, displayName }, (err, user, created) => {
     if (created === true) {
-      console.log(`User ${googleId} was created: ${displayName}`);
+      // console.log(`User ${googleId} was created: ${displayName}`);
       callback(null, user);
     } else {
       User.findOrCreate({ googleId, displayName }, (err, user, created) => {
         if (created === false) {
-          console.log(`User ${displayName} exists`);
+          // console.log(`User ${displayName} exists`);
           // user is the model
           callback(null, user);
         }
@@ -164,7 +164,7 @@ const getAllPlaylists = (filter, callback) => {
       console.log("error", err);
       callback(err);
     } else {
-      //console.log("data", data);
+      // console.log("data", data);
       callback(null, data);
     }
   });

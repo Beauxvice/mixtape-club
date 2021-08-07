@@ -103,10 +103,12 @@ passport.use(
       passReqToCallback: true,
     },
     (req, token, tokenSecret, profile, done) => {
-      //console.log("spotify auth", req);
-      db.User.findOrCreate({spotifyId: profile.id}).then((user) => {
-        console.log(user, token);
-      });
+      console.log("spotify auth", profile, token, tokenSecret);
+
+      // db.User.findOrCreate({spotifyId: profile.id}).then((user) => {
+      //   console.log(user, token);
+      // });
+
       // process.nextTick(() => done(null, profile, token));
       // console.log("spotify auth", req);
       // db.findCreate(
@@ -143,7 +145,7 @@ app.get(
  app.get('/auth/google/callback',
  passport.authenticate('google', { failureRedirect: `${process.env.ENVIRONMENT_URL}/login` }),
  (req, res) => {
-   res.redirect(`${process.env.ENVIRONMENT_URL}/mixtape-player`);
+   res.redirect(`${process.env.ENVIRONMENT_URL}/login`);
  });
 
 app.get("/auth/spotify/callback",
@@ -152,7 +154,7 @@ app.get("/auth/spotify/callback",
   }),
   (req, res) => {
     //console.log('spotify callback', res.req);
-    res.redirect(`${process.env.ENVIRONMENT_URL}/`);
+    res.redirect(`${process.env.ENVIRONMENT_URL}/mixtape-player`);
   }
 );
 // app.get(
@@ -188,6 +190,7 @@ app.get("/logout", (req, res) => {
  */
 
 app.get("/getUser", (req, res) => {
+  console.log("get user query", req.query);
   db.findCreate(req.query, (info, response) => {
     console.log('response from app.get /getUser', response);
     res.send(response);

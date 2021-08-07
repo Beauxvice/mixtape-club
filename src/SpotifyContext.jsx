@@ -6,6 +6,7 @@ const SpotifyContextProvider = ({children}) => {
   const [ spotifyUser, setSpotifyUser ] = useState({});
   const { googleUser, setGoogleUser } = useState({});
 
+  const 
 
   const SpotifyProps = {
     spotifyUser,

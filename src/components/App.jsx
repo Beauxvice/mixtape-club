@@ -98,10 +98,9 @@ class App extends React.Component {
    * server using passport.
    */
   componentDidMount() {
-    this.authenticateUser();
     const { googleId } = this.state;
-
-    axios
+    this.authenticateUser().then(() => {
+      axios
       .get("/getUser", {
         googleId,
       })
@@ -114,6 +113,7 @@ class App extends React.Component {
       });
     console.log("location in componentDidMount", location);
     //this.suggestMixtape();
+    });
   }
 
   /**
@@ -445,9 +445,8 @@ class App extends React.Component {
    * Google Strategy. Maintains record of authentication
    * on the state.
    */
-  authenticateUser() {
-    axios
-      .get("/user/")
+  async authenticateUser() {
+    await axios.get("/user/")
       .then((response) => {
         if (response.data.verified) {
           console.log("response from google", response.data);

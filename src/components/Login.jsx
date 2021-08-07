@@ -1,6 +1,4 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 
 import Hero from "./Hero.jsx";
 import Footer from "./Footer.jsx";
@@ -9,7 +7,7 @@ import Footer from "./Footer.jsx";
  * clicked. It is located at the login route and is a child component of Container.
  */
 
-const LoginBox = (props) => {
+const Login = (props) => {
   const { googleId } = props;
   return (
     <div>
@@ -24,16 +22,6 @@ const LoginBox = (props) => {
           <a href="/auth/google" className="btn btn-info">
             Sign In with Google
           </a>
-          <div>
-            { googleId ?(
-            <a href="/auth/spotify" className="btn btn-info">
-              Sign In with Spotify
-            </a>
-            ) :(
-              <h6>login to google first</h6>
-            )}
-            
-          </div>
         </div>
       </div>
       <Footer />
@@ -41,4 +29,4 @@ const LoginBox = (props) => {
   )
 };
 
-export default LoginBox;
+export default Login;

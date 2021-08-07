@@ -47,6 +47,7 @@ function Container(props) {
     googleId,
   } = props;
 
+
   return (
     <section className="route-section">
       <Switch location={location}>
@@ -54,7 +55,7 @@ function Container(props) {
         <Route exact path="/" component={Login} />
         <Route
           path="/create-mixtapes"
-          render={(props) =>
+          render={(props) =>(
             isAuthenticated ? (
               <CreateMixtapes
                 {...props}
@@ -86,8 +87,9 @@ function Container(props) {
                 onDelete={onDelete}
               />
             ) : (
-              <Login {...props} />
-            )
+            
+              <Login {...props} googleId={googleId} />
+            ))
           }
         />
         <Route

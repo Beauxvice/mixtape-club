@@ -126,16 +126,12 @@ passport.use(
  */
 app.get(
   "/auth/google",
-  passport.authenticate("google", {
-    scope: ["email", "profile"],
-  })
+  passport.authenticate("google", { scope: ["email", "profile"] })
 );
 
 app.get(
   "/auth/spotify",
-  passport.authenticate("spotify", {
-    scope: 'user-read-recently-played',
-  })
+  passport.authenticate("spotify", { scope: 'user-read-recently-played' })
 );
 
 /**

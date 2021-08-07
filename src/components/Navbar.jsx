@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+
+import { SpotifyContext } from '../SpotifyContext.jsx';
 
 /** Navigation component renders the navbar at the top of all routes of the app
  * and contains links to the create-mixtapes, mixtape-player, and login routes. It is a child component
@@ -8,6 +10,8 @@ import { Link } from "react-router-dom";
 
 const Navigation = (props) => {
   const { logout, isAuthenticated } = props;
+
+  const { spotifyUser, getSpotifyUser } = useContext(SpotifyContext);
 
   return (
     <nav className="navbar navbar-expand-md fixed-top navbar-dark bg-info">
@@ -46,6 +50,17 @@ const Navigation = (props) => {
             ) : (
               <Link to="/login" className="nav-link">
                 Login
+              </Link>
+            )}
+          </li>
+          <li className="nav-item">
+            {spotifyUser ? (
+              <div />
+            ) : (
+              <Link to="/mixtape-player" href="/auth/spotify" className="nav-link" onClick={() => getSpotifyUser()}>
+                <a href="/auth/spotify">
+                  Spotify
+                </a>
               </Link>
             )}
           </li>

@@ -9,6 +9,8 @@ const SpotifyStrategy = require("passport-spotify").Strategy;
 const mongoose = require("mongoose");
 const db = require("../database/index");
 const { lyricRoutes } = require("./routes/lyricRoutes");
+const { spotifyRoutes } = require("./routes/spotifyRoutes");
+const { authorizeSpotify, getAccessToken } = require('./API/spotify');
 // const { getRelatedVideos } = require('./helper');
 /**
  * express required to aid in in handling request made to server
@@ -119,6 +121,13 @@ passport.use(
     }
   )
 );
+
+app.get('/spotifyLogin', authorizeSpotify);
+
+app.get('/spotifyCallback', getAccessToken, (req, res, next) => {
+  console.log(req.credentials);
+  res.send(req.credentials);
+});
 
 /**
  * Get request calling Google's authenticaion
@@ -406,6 +415,7 @@ app.post("/search", (req, res) => {
 // });
 
 app.use('/', lyricRoutes);
+app.use('/', spotifyRoutes);
 // app.post("/suggested", (req, res) => {
 //   getRelatedVideos()
 //   .then((data) => data)

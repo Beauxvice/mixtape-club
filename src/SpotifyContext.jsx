@@ -12,7 +12,7 @@ const SpotifyContextProvider = ({children}) => {
 
   const getSpotifyUser = () => {
     console.log("clicked");
-    axios.get('/user', { withCredentials: true })
+    axios.get('/spotifyLogin', { withCredentials: true })
     .then(res => {
       if(res.data){
         console.log("spotify response", res.data);

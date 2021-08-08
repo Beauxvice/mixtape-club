@@ -63,7 +63,7 @@ class App extends React.Component {
         "Track 4 B",
         "Track 5 B",
       ],
-      googleId: null,
+      googleId: '',
       googleUser: {},
       tapeBackgroundColor: "#fff",
       queryParam: "",

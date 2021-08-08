@@ -17,6 +17,19 @@
   margin-top: 50px;;
 }
 
+.shareMixtape {
+  margin-left: 23px;
+  margin-bottom: 4px;
+}
+
+.fb-share-button {
+  margin-left: 38px;
+  margin-bottom: 8px;
+}
+
+.twitter-share-button {
+  margin-left: 38px;
+}
 
 .lineBreak {
   margin-top: 1.5em;

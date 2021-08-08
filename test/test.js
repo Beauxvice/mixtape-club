@@ -19,7 +19,6 @@ describe("Redirect", () => {
           );
         })
         .catch((err) => {
-          console.log("");
         });
     });
   });

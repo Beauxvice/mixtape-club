@@ -5,10 +5,7 @@
 > Pithy project description
 
 ## Team
-
-  - __Product Owner__: Space Execs
-  - __Scrum Master__: Gregory Ybos
-  - __Development Team Members__: Berhane Tendai Cole, Caleb Roberts
+  - __Development Team__: Gregory Ybos, Berhane Tendai Cole, Caleb Roberts
 
 ## Table of Contents
 
@@ -73,6 +70,11 @@
 
 
 ## Development
+  - Development Server Command
+    npm start
+
+  - Development Webpack Command
+    npm run react-dev
 
 ### Installing Dependencies
 
@@ -81,4 +83,20 @@ From within the root directory:
 ```
 npm install
 ```
+
+### APIs Implemented
+  - Youtube Data API v.3
+    Music querying and building playlists
+
+  - Google Oauth 2.0
+    Authentification with Google
+
+  - Spotify
+
+  - Musixmatch
+    Querying Lyric data for explicit flag
+
+  - Genius
+    Querying Lyrics and miscellaneous song information
+
 

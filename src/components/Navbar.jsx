@@ -53,17 +53,6 @@ const Navigation = (props) => {
               </Link>
             )}
           </li>
-          <li className="nav-item">
-            {spotifyUser ? (
-              <div />
-            ) : (
-              <Link to="/mixtape-player" href="/auth/spotify" className="nav-link" onClick={() => getSpotifyUser()}>
-                <a href="/auth/spotify">
-                  Spotify
-                </a>
-              </Link>
-            )}
-          </li>
         </ul>
       </div>
     </nav>

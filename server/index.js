@@ -11,7 +11,7 @@ const db = require("../database/index");
 const { lyricRoutes } = require("./routes/lyricRoutes");
 const { spotifyRoutes } = require("./routes/spotifyRoutes");
 const { authorizeSpotify, getAccessToken } = require('./API/spotify');
-// const { getRelatedVideos } = require('./helper');
+const { getRelatedVideos } = require('./helper');
 /**
  * express required to aid in in handling request made to server
  * session required to aid with passport request for google authentication
@@ -90,7 +90,6 @@ passport.use(new GoogleStrategy({
         { googleId: profile.id, displayName: profile.displayName },
         (err, user) => done(err, user)
       );
-      console.log(profile);
       process.nextTick(() => done(null, profile));
     }
   )
@@ -197,7 +196,6 @@ app.get("/logout", (req, res) => {
 app.get("/getUser", (req, res) => {
   console.log("get user query", req.query);
   db.findCreate(req.query, (info, response) => {
-    // console.log('response from app.get /getUser', response)
     res.send(response);
   });
 });
@@ -211,14 +209,26 @@ app.get("/getUser", (req, res) => {
 app.get("/userPlaylists", (req, res) => {
   if (req.user) {
     const { id, displayName } = req.user;
-    // console.log('displayName from app.get /userPlaylists', displayName);
     db.getAllPlaylists({ userId: id }, (info, response) => {
-      // console.log('response from db.getAllPlaylists in app.get/userPlaylists', response);
       const data = { response, displayName };
-      // console.log('data from get/userPlaylists', data);
       res.send(data);
     });
   }
+});
+
+
+app.get("/suggestedPlaylists", (req, res) => {
+  const { id, displayName } = req.user;
+  const filter = { userId: id };
+  db.retrieveSuggested(filter, (err, response) => {
+    if (response === null) {
+      res.end("No Results Found");
+    } else {
+      const data = { response, displayName };
+      // console.log('suggestedsss', data);
+      res.send(data);
+    };
+  });
 });
 
 
@@ -244,7 +254,7 @@ app.get("/", (req, res) => {
       }
     } else if (req.path === '/') {
       res.redirect(`${process.env.ENVIRONMENT_URL}/mixtape-player`);
-    } else {
+    } else if(req.path !== '/suggested') {
       res.sendFile(path.join(__dirname, '../dist/index.html'));
     }
   }
@@ -276,7 +286,6 @@ app.post("/update", (req, res) => {
   const filter = { userId: "CHANGE THE FILTER SOMEHOW FILL_ME_IN" };
   const update = { tapeDeck: "FILL_ME_IN" };
   db.updatePlaylist(filter, update, (response) => {
-    // console.log('response from app.post /update', response);
     res.end("Playlist Updated");
   });
 });
@@ -296,9 +305,7 @@ app.post("/store", (req, res) => {
     tapeLabel,
     explicitContent,
   };
-  console.log(playlistDetails);
   db.storePlaylist(playlistDetails, (response) => {
-    // console.log('respose from db.storePlaylist in app.post/store', response);
     res.end("Playlist Stored");
   });
 });
@@ -316,7 +323,6 @@ app.post("/getLink", (req, res) => {
     if (response === null) {
       res.end("No Results Found");
     } else {
-      // console.log('response._id in app.post/getLink',response._id);
 
       res.send({ id: response._id });
     }
@@ -331,7 +337,6 @@ app.post("/getLink", (req, res) => {
 app.post("/mixtape-player/", (req, res) => {
   // need to do this dynamically
   const { id } = req.body;
-  // console.log('id from app.post /mixtape-player/', id);
   const filter = { _id: id };
 
   db.retrievePlaylist(filter, (response) => {
@@ -362,7 +367,6 @@ app.post("/mixtape-player/", (req, res) => {
       }
     }
   });
-
 });
 
 /**
@@ -385,7 +389,6 @@ app.post("/search", (req, res) => {
   axios
     .get(url, options)
     .then((response) => {
-      // console.log('response from app.post/search', response.data.items);
       res.send(response.data);
     })
     .catch((err) => {
@@ -395,24 +398,36 @@ app.post("/search", (req, res) => {
 });
 
 
-// app.post('/suggested', (req, res) =>{
-//   const {videoId} = req.body.selectedResult.id;
-//   console.log('req.body from app.post/suggested', req.body.selectedResult.id.videoId);
-//   const url = 'https://youtube.googleapis.com/youtube/v3/search?part=snippet';
-//   const options = {
-//     params: {
-//       key: process.env.YOUTUBE_API_KEY,
-//       q: videoId,
-//       type: 'video',
-//       videoEmbeddable: true,
-//       maxResults: 8,
-//     }
-//   };
-//   axios
-//   .get(url, options)
-//   .then(results => {console.log('results.data.items from app.post /suggested', results.data); return results;})
-//   .catch((err) => console.log('ERROR from app.post/suggested', err));
-// });
+app.post('/suggested', (req, res) =>{
+  getRelatedVideos(req.body)
+  .then((data) => {{console.log('data', data);}; res.status(200).send(data);}).catch((err) =>{
+    console.log(err);
+    res.sendStatus(500);
+  });
+});
+
+
+app.get('/suggested', (req, res) =>{
+  console.log('req.body line 360 app.get/suggested',req.body);
+  res.send(req.body);
+});
+
+app.post("/saveSuggested", (req, res) => {
+  // need to figure out how we are sending info to endpoint
+  const { userId, aSideLinks, bSideLinks, tapeDeck, tapeLabel, explicitContent } = req.body;
+  const playlistDetails = {
+    userId,
+    aSideLinks: JSON.stringify(aSideLinks),
+    bSideLinks: JSON.stringify(bSideLinks),
+    tapeDeck,
+    tapeLabel,
+    explicitContent,
+  };
+  db.storeSuggested(playlistDetails, (response) => {
+    res.end("Playlist Stored");
+  });
+});
+
 
 app.use('/', lyricRoutes);
 app.use('/', spotifyRoutes);

@@ -5,7 +5,7 @@ import React from "react";
  */
 
 const Footer = () => (
-  <footer className="text-info">Created with love by Operation Sparkle.</footer>
+  <footer className="text-info">Created by Operation Sparkle. Extended by Space Executives</footer>
 );
 
 export default Footer;

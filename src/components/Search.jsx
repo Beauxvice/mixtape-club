@@ -10,7 +10,6 @@ import React, { useContext } from "react";
 const Search = (props) => {
   const { onSearch, onSearchChange } = props;
   const { test } = useContext(TrackContext);
-  // console.log('INSIDE CONTEXT', test);
   return (
     <div className="navbar navbar-light rounded-lg search d-flex justify-content-md-end">
       <input
